@@ -50,19 +50,19 @@ while (1)
     delta_H = (1/pi)*epsilon./(epsilon^2+u.^2);
     
     %% begin to calculate the SPF of each feature
-    [g_in_int, g_out_int, l_in_int, l_out_int] = Feature_extraction(F_int, Gb, H_u,u);
+    [g_in_int, g_out_int, l_in_int, l_out_int] = feature_extraction(F_int, Gb, H_u,u);
     f_in_int = lambda * g_in_int + (1 - lambda) * l_in_int;
     f_out_int = lambda * g_out_int + (1-lambda) * l_out_int;
     Fit_int = f_in_int .* H_u + f_out_int .* (1 - H_u);
     spf_int = F_int - Fit_int;
     
-    [g_in_tex, g_out_tex, l_in_tex, l_out_tex] = Feature_extraction(F_tex,Gb,H_u,u);
+    [g_in_tex, g_out_tex, l_in_tex, l_out_tex] = feature_extraction(F_tex,Gb,H_u,u);
     f_in_tex = lambda * g_in_tex + (1-lambda) * l_out_tex;
     f_out_tex = lambda *g_out_tex + (1-lambda) * l_out_tex;
     Fit_tex = f_in_tex .* H_u + f_out_tex .* (1-H_u);
     spf_tex = F_tex - Fit_tex;
     
-    [g_in_rou, g_out_rou, l_in_rou, l_out_rou] = Feature_extraction(F_rou,Gb,H_u,u);
+    [g_in_rou, g_out_rou, l_in_rou, l_out_rou] = feature_extraction(F_rou,Gb,H_u,u);
     f_in_rou = lambda * g_in_rou + (1-lambda) * l_out_rou;
     f_out_rou = lambda  * g_out_rou + (1-lambda) * l_out_rou;
     Fit_rou = f_in_rou .* H_u + f_out_rou .* (1 - H_u);
