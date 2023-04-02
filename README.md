@@ -2,8 +2,7 @@
 This repository contains the codes for paper Global and local multi-feature fusion-based active contour model for infrared image segmentation by Minjie Wan*, Qinyan Huang, Yunkai Xu, et al. (*Corresponding author). 
 
 The complete contour evolution results and binary segmentation results on the IR dataset are also presented below: 
-![2](https://user-images.githubusercontent.com/38133231/229345293-3ed83536-8720-4d3d-ace6-51e5f616a986.jpg)
-
+![Attachment](https://user-images.githubusercontent.com/38133231/229345856-9c0b0e88-d33b-4627-aa2b-8fe7085ee9fe.jpg)
 
 ## Requirements
 - Matlab 2017a
