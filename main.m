@@ -3,41 +3,40 @@ clc;
 close all;
 
 %% parameter setting
-iter = 60;
-alpha = 400;
-epsilon = 1.0; 
-lambda = 0.5;
-beta = 1.0;
-Gb = fspecial('gaussian',5,beta); 
-r =3.0;
+alpha = 400; % ballon force
+epsilon = 1.0; % controlling parameter for Heaviside function
+lambda = 0.3; % trade-off parameter
+beta = 1.0; % Gaussian kernel for computing local multi-features
+Gb = fspecial('gaussian',5, beta); 
+r =3.0; % Gaussian kernel for regularizing phi
 Gr = fspecial('gaussian', 5, r);
-n = 1;
+thr = 10^(-3); % convergence threshold
+n = 1; % record iteration number
 
-%% load IR image
-filename = 'E:/PhdStudy/2021主动轮廓分割论文/Matlab仿真/专利算法撰写资料/专利算法撰写资料/input/R2_input/man1.bmp';
-% filename = './datasets/2.jpg';
-% filename = './datasets/3.png';
-% filename = './datasets/4.jpg';
-% filename = './datasets/5.jpg';
+%% load the input IR image
+filename = './1.jpg';
 Img = imread(filename);
 Img = (Img(:,:,1));
 [row,col] = size(Img);
 
 %% compute texture feature & roughness feature & intensity feature
 F_tex = entropyfilt(Img);
-F_rou = Stdfilt(Img, 3);
+F_rou = stdfilt(Img, 3);
 F_int = double(Img);
 
-%% Initialization of level set function
-[nx,ny]=size(F_int);
+%% inialize the level set function
+[nx, ny] = size(F_int);
 x0 = round(ny/2);
 y0 = round(nx/2);
 r1 = y0 - 40;
 r2 = y0 + 40;
 c1 = x0 - 40;
 c2 = x0 + 40;
-u= ones(row,col);
+u = ones(row,col);
 u(r1:r2,c1:c2) = -1;
+spf_pre = zeros(nx,ny);
+
+%% show the initial contour
 figure(1);
 imshow(F_int, [0,255]);
 hold on;
@@ -45,7 +44,6 @@ axis off;
 [c, h] = contour(u, [0 0], 'g','LineWidth',2);
 title('Initial contour');
 
-tic;
 while (1)
     [ux, uy] = gradient(u);
     H_u = 0.5*(1+(2/pi)*atan(u/epsilon));
@@ -72,14 +70,15 @@ while (1)
     
     %% evolve the level set function u
     spf_total = spf_int + spf_tex + spf_rou;
-    spf_total = spf_total / (max(abs(spf_total(:)))); % regularized to [0,1]
+    spf_total = spf_total / (max(abs(spf_total(:)))); % normalization
     u = u + (alpha * spf_total.* sqrt( ux.^2 + uy.^2 ));
     u = (u >= 0) - ( u< 0);
   
-   %% judge if the level set function u is converged
-    if n >= iter
+   %% whether u is converged
+    delta = norm(spf_total-spf_pre,'fro')/norm(spf_pre,'fro');
+    if delta <= thr
         break;
-    end 
+    end
     u = conv2(u, Gr, 'same');   
     if mod(n,1) == 0 
         imagesc(F_int, [0 255]); colormap(gray); hold on; axis off;
@@ -88,23 +87,20 @@ while (1)
         title(iterNum);
         pause(0.01);
     end
+    
     n = n + 1;
+    spf_pre = spf_total;
 end
-toc
+
 %% Output the binary image
 u = conv2(u, Gr, 'same');
 u = (u >= 0) - ( u< 0);
 bw = u;
 bw(bw<0) = 0; 
 
-%% Output the result of contour extraction
+%% Show binary segmentation result
 figure(2);
-imagesc(Img,[0 255]); colormap(gray);
-hold on;
-axis off;
-[c, h] = contour(u, [0 0], 'r','LineWidth',2); 
-figure(3);
 imshow(bw);
-
+title('Binary segmentation result');
 
    
