@@ -6,6 +6,7 @@ Infrared (IR) image segmentation technology plays a pivotal role in many urgent 
 
 ![Fig_2](https://github.com/user-attachments/assets/c4ebbd8d-4bdb-4352-8cde-28b8e80f9487)
 
+## Results
 Part of the contour evolution results are presented below: 
 ![绘图1](https://github.com/user-attachments/assets/e25324f8-f263-4918-b76c-059d4eceda77)
 
